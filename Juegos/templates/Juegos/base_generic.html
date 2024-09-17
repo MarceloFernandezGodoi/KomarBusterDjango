@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mi App{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts (opcional para darle un toque moderno) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Iconos de Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar {
+            background-color: black; /* Fondo oscuro para el navbar */
+        }
+        .navbar-brand, .nav-link, .btn-link {
+            color: #ffffff !important; /* Texto blanco en el navbar */
+        }
+
+        .navbar-brand{
+            font-size: 40px;
+        }
+        .nav-link:hover {
+            color: purple !important; /* Efecto hover con color llamativo */
+        }
+        .btn-link {
+            border: none;
+            color: #ffffff;
+        }
+        .btn-link:hover {
+            color: #dc3545 !important; /* Cambio de color al pasar sobre el botón cerrar sesión */
+        }
+        .main-content {
+            padding: 2rem 0;
+        }
+        footer {
+            background-color: purple;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body style="background-color:black;">
+    <!-- Navbar moderna -->
+    <header class="navbar navbar-expand-lg navbar-dark">
+        <nav class="container">
+            <a class="navbar-brand" style="font-size: 20px;font-family: 'Press Start 2P', cursive;" href="{% url 'home' %}">
+                <i class="fas fa-gamepad" style="color:purple; font-size:30px"></i> KomarBuster
+            </a>
+
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {% if user.is_superuser %}
+            <p class="mt-3 badge bg-success text-dark fs-5">
+                <i class="fa fa-star"></i> Eres administrador</p>
+        {% else %}
+        {% endif %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_productos' %}"><i class="fas fa-box"></i> Productos</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'perfil_usuario' %}"><i class="fas fa-user"></i> Mi Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                            </form>
+                        </li>
+
+
+                        {% if user.is_superuser %}
+
+                        {% else %}
+                                                    <!-- Botón para ver el carrito -->
+    <a href="{% url 'ver_carrito' %}" class="btn btn-warning mb-3 float-end">
+        <i class="fas fa-shopping-cart"></i> Ver Carrito
+    </a>
+
+
+                        {% endif %}
+
+
+
+     
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro' %}"><i class="fas fa-user-plus"></i> Registrarse</a>
+                        </li>
+                    {% endif %}
+
+
+
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container main-content" >
+        {% block content %}
+        <!-- Aquí iría el contenido de cada página -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 KomarBuster - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
