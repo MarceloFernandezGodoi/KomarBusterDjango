@@ -1,0 +1,44 @@
+{% extends 'Juegos/base_generic.html' %}
+
+{% block title %}Perfil de Usuario{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Tarjeta con información del usuario -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Perfil de Usuario</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                </div>
+            </div>
+
+            <!-- Sección adicional si el usuario es superusuario -->
+            {% if user.is_superuser %}
+            <div class="card shadow-lg mt-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Lista de Usuarios (Superusuario)</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for usuario in usuarios %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ usuario.username }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info mt-4" role="alert">
+                Eres un usuario normal. No tienes acceso a la lista de usuarios.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
