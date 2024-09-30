@@ -1,0 +1,208 @@
+
+
+{% extends 'Juegos/base_generic.html' %}
+
+{% block title %}Noticias{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f7;
+        margin: 0;
+
+    }
+
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        color: purple !important;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+
+
+
+
+    img {
+        border-radius: 10px;
+        margin-right: 20px;
+        width: 200px;
+        height: auto;
+    }
+
+    h2 {
+        color: #34495e;
+        margin: 0 0 10px;
+        font-size: 1.5em;
+    }
+
+    p {
+        color: #7f8c8d;
+        font-size: 1em;
+        margin: 0 0 10px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #2980b9;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+
+    a:hover {
+        color: #e74c3c;
+    }
+
+    .no-news {
+        text-align: center;
+        font-size: 1.2em;
+        color: #e74c3c;
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .step-links {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .step-links .btn {
+        background-color: purple;
+        color: white;
+        padding: 10px 20px;
+        margin: 0 5px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .step-links .btn:hover {
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        color: purple;
+    }
+
+    .step-links .btn.disabled, 
+    .step-links .current {
+        background-color: #bdc3c7;
+        color: white;
+        padding: 10px 20px;
+        margin: 0 5px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: default;
+    }
+
+    .step-links .current {
+        background-color: #2c3e50;
+        color: white;
+        font-weight: bold;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+        .step-links .btn {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .step-links .current {
+            padding: 8px 10px;
+        }
+    }
+
+    .search-form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .search-form input {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 300px;
+        margin-right: 10px;
+    }
+    
+    .search-form button {
+        padding: 10px 20px;
+        background-color: purple;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    .search-form button:hover {
+        background-color: white;
+        color: purple
+    }
+    
+</style>
+
+<body>
+    <h1>Últimas Noticias</h1>
+    <form method="GET" action="{% url 'noticias' %}" class="search-form">
+        <input type="text" name="query" placeholder="Buscar noticias..." value="{{ request.GET.query }}">
+        <button type="submit">Buscar</button>
+    </form>
+    <ul>
+        {% for item in news %}
+        <li style=' background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin: 10px 0;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;'>
+            <img src="{{ item.thumbnail }}" alt="{{ item.title }}">
+            <div>
+                <h2>{{ item.title }}</h2>
+                <p>{{ item.short_description }}</p>
+                <a href="{{ item.article_url }}" target="_blank">Leer más</a>
+            </div>
+        </li>
+        {% empty %}
+        <li class="no-news">No hay noticias disponibles en este momento.</li>
+        {% endfor %}
+    </ul>
+
+        <!-- Controles de paginación -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if news.has_previous %}
+                    <a href="?page=1" class="btn first-page">&laquo; Primera</a>
+                    <a href="?page={{ news.previous_page_number }}" class="btn prev-page">Anterior</a>
+                {% endif %}
+        
+                <span class="current">
+                    Página {{ news.number }} de {{ news.paginator.num_pages }}
+                </span>
+        
+                {% if news.has_next %}
+                    <a href="?page={{ news.next_page_number }}" class="btn next-page">Siguiente</a>
+                    <a href="?page={{ news.paginator.num_pages }}" class="btn last-page">Última &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+</body>
+
+{% endblock %}

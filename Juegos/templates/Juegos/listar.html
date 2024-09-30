@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="my-4 text-center text-uppercase" >Lista de Productos</h2>
+    <h2 class="my-4 text-center text-uppercase">Lista de Productos</h2>
 
     {% if user.is_superuser %}
     <!-- Botón para crear producto solo visible para superusuarios -->
@@ -13,42 +13,59 @@
     </a>
     {% endif %}
 
-
-    <!-- Tabla de productos -->
-    <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.nombre }}</td>
-                    <td>${{ producto.precio }}</td>
-                    <td>
-                        {% if user.is_superuser %}
-                        <!-- Botones de edición y eliminación para superusuarios -->
-                        <a href="{% url 'editar_producto' producto.pk %}" class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <a href="{% url 'eliminar_producto' producto.pk %}" class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash-alt"></i> Eliminar
-                        </a>
-                        {% else %}
-                        <!-- Botón para agregar producto al carrito -->
-                        <a href="{% url 'agregar_al_carrito' producto.pk %}" class="btn btn-sm btn-success">
-                            <i class="fas fa-cart-plus"></i> Agregar al Carrito
-                        </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Contenedor de productos -->
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <!-- Imagen del producto -->
+                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text text-muted">${{ producto.precio }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    {% if user.is_superuser %}
+                    <!-- Botones de edición y eliminación para superusuarios -->
+                    <a href="{% url 'editar_producto' producto.pk %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'eliminar_producto' producto.pk %}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </a>
+                    {% else %}
+                    <!-- Botón para agregar producto al carrito -->
+                    <a href="{% url 'agregar_al_carrito' producto.pk %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
+
+<!-- Responsive styles -->
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
 {% endblock %}
+

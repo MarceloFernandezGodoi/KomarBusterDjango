@@ -1,0 +1,277 @@
+{% extends 'Juegos/base_generic.html' %}
+
+{% block title %}Juegos Gratuitos{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f7;
+        margin: 0;
+    }
+
+    h1 {
+        text-align: center;
+        color: purple !important;
+        margin: 20px 0;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 20px;
+        width: 250px; /* Ancho fijo para las cards */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card img {
+        border-radius: 10px;
+        width: 100%; /* Ajustar al 100% del contenedor */
+        height: auto;
+    }
+
+    h2 {
+        color: #34495e;
+        margin: 10px 0;
+        font-size: 1.2em; /* Tamaño de fuente ajustado */
+        text-align: center;
+    }
+
+    p {
+        color: #7f8c8d;
+        font-size: 0.9em; /* Tamaño de fuente ajustado */
+        text-align: center;
+    }
+
+    .card-container a {
+        text-decoration: none;
+        background-color: purple;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .card-container a:hover {
+        background-color: white;
+        color: purple;
+    }
+
+    .no-news {
+        text-align: center;
+        font-size: 1.2em;
+        color: #e74c3c;
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .step-links {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .step-links .btn {
+        background-color: purple;
+        color: white;
+        padding: 10px 20px;
+        margin: 0 5px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .step-links .btn:hover {
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        color: purple;
+    }
+
+    .step-links .btn.disabled, 
+    .step-links .current {
+        background-color: #bdc3c7;
+        color: white;
+        padding: 10px 20px;
+        margin: 0 5px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: default;
+    }
+
+    .step-links .current {
+        background-color: #2c3e50;
+        color: white;
+        font-weight: bold;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+        .card {
+            width: 90%; /* Ancho más estrecho en pantallas pequeñas */
+        }
+    }
+
+    .filter-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+        justify-content: center; /* Centra los elementos horizontalmente */
+
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-item {
+        margin: 5px; /* Espaciado entre los elementos del filtro */
+        color: white;
+
+    }
+
+    .filter-item label{
+        background-color: purple;
+        padding: 5px;
+        border-radius: 15px;
+    }
+
+    
+
+    .filter-select {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-left: 10px;
+        background-color: white;
+        padding: 3px;
+        border-radius: 15px;
+    }
+
+    .filter-button {
+        background-color: purple;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .filter-button:hover {
+        background-color: white;
+        color: purple;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 600px) {
+        .filter-form {
+            flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+            align-items: flex-start; /* Alinea los elementos a la izquierda */
+        }
+
+        .filter-item {
+            width: 100%; /* Cada filtro ocupa el 100% del ancho */
+            margin-bottom: 10px; /* Espaciado vertical entre filtros */
+        }
+    }
+</style>
+
+<h1>Juegos Gratuitos</h1>
+
+<!-- Filtros -->
+<div class="filter-container">
+    <form method="GET" action="{% url 'free_games' %}" class="filter-form">
+        <div class="filter-item">
+            <label for="genre">Género:</label>
+            <select name="genre" id="genre" class="filter-select">
+                <option value="">Todos</option>
+                {% for genre in genres %}
+                    <option value="{{ genre }}" {% if genre == request.GET.genre %}selected{% endif %}>{{ genre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label for="order_by">Ordenar por:</label>
+            <select name="order_by" id="order_by" class="filter-select">
+                <option value="title" {% if request.GET.order_by == 'title' %}selected{% endif %}>Título</option>
+                <option value="release_date" {% if request.GET.order_by == 'release_date' %}selected{% endif %}>Fecha de subida</option>
+                <option value="genre" {% if request.GET.order_by == 'genre' %}selected{% endif %}>Género</option>
+                <option value="platform" {% if request.GET.order_by == 'platform' %}selected{% endif %}>Plataforma</option>
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label for="order_direction">Dirección:</label>
+            <select name="order_direction" id="order_direction" class="filter-select">
+                <option value="asc" {% if request.GET.order_direction == 'asc' %}selected{% endif %}>Ascendente</option>
+                <option value="desc" {% if request.GET.order_direction == 'desc' %}selected{% endif %}>Descendente</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn filter-button">
+            <i class="fa-solid fa-filter"></i>
+            Filtrar</button>
+    </form>
+</div>
+
+<div class="card-container">
+    {% for game in page_obj %}
+    <div class="card">
+        <img src="{{ game.image }}" alt="{{ game.title }}">
+        <h2>{{ game.title }}</h2>
+        <p>{{ game.description }}</p>
+        <p>Plataforma: {{ game.platform }}</p>
+        <a href="{{ game.url }}" target="_blank">Jugar Ahora</a>
+    </div>
+    {% empty %}
+    <div class="no-news">No hay juegos gratuitos disponibles en este momento.</div>
+    {% endfor %}
+</div>
+
+<!-- Controles de paginación -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn first-page">&laquo; Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn prev-page">Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn next-page">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn last-page">Última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

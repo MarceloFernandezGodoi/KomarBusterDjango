@@ -19,9 +19,17 @@
         {% for producto_id, item in carrito.items %}
         <tr>
             <td>{{ item.nombre }}</td>
-            <td>{{ item.precio }}</td>
-            <td>{{ item.cantidad }}</td>
-            <td>{{ item.precio|floatformat:2 }}</td>
+            <td>${{ item.precio|floatformat:2 }}</td>
+            <!-- Formulario para actualizar la cantidad -->
+            <td>
+                <form method="POST" action="{% url 'actualizar_cantidad_carrito' producto_id %}">
+                    {% csrf_token %}
+                    <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" class="form-control form-control-sm" style="width: 60px;">
+                    <button type="submit" class="btn btn-primary btn-sm mt-1">Actualizar</button>
+                </form>
+            </td>
+            <!-- Mostrar el total calculado para cada producto -->
+            <td>${{ item.total|floatformat:2 }}</td>
             <td>
                 <a href="{% url 'eliminar_del_carrito' producto_id %}" class="btn btn-danger">Eliminar</a>
             </td>
@@ -34,7 +42,7 @@
     </tbody>
 </table>
 
-<p>Total a pagar: ${{ total|floatformat:2 }}</p>
+<p><strong>Total a pagar:</strong> ${{ total|floatformat:2 }}</p>
 
 <a href="{% url 'vaciar_carrito' %}" class="btn btn-warning">Vaciar Carrito</a>
 <a href="{% url 'listar_productos' %}" class="btn btn-primary">Seguir comprando</a>

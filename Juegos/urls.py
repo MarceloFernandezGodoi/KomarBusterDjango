@@ -1,7 +1,22 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import CustomLoginView  # Importa la vista personalizada
+from rest_framework.routers import DefaultRouter
+from .views import ProductoViewSet, PedidoViewSet
+from .views import get_free_games
+
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+# Creamos un router que se encargará de las rutas de los ViewSets
+router = DefaultRouter()
+router.register(r'productos', ProductoViewSet)  # Registrar el ViewSet de Producto
+router.register(r'pedidos', PedidoViewSet)  # Registrar el ViewSet de Pedido
+
 
 urlpatterns = [
     path('', views.home, name='home'),  
@@ -23,4 +38,17 @@ urlpatterns = [
     path('carrito/agregar/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
     path('carrito/eliminar/<int:producto_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
     path('carrito/vaciar/', views.vaciar_carrito, name='vaciar_carrito'),
-]
+    path('carrito/actualizar/<int:producto_id>/', views.actualizar_cantidad_carrito, name='actualizar_cantidad_carrito'),
+    path('api/productos/', views.productos_api, name='productos_api'),
+    path('api/productos/<int:pk>/', views.productos_api, name='producto_detalle'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include(router.urls)),  # Incluir las rutas del router en la URL base 'api/'
+    path('pedidos/', views.ListaPedidosView.as_view(), name='lista_pedidos'),
+    path('pedidos/crear/', views.CrearPedidoView.as_view(), name='crear_pedido'),
+    path('pedidos/editar/<int:pk>/', views.EditarPedidoView.as_view(), name='editar_pedido'),
+    path('pedidos/eliminar/<int:pk>/', views.EliminarPedidoView.as_view(), name='eliminar_pedido'),
+    path('noticias/', views.noticias, name='noticias'),
+    path('free-games/', views.get_free_games, name='free_games'),
+
+] 
