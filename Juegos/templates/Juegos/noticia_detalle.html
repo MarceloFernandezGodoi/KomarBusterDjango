@@ -1,0 +1,10 @@
+{% extends 'Juegos/base_generic.html' %}
+
+{% block title %}{{ noticia.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ noticia.title }}</h1>
+    <img src="{{ noticia.thumbnail }}" alt="{{ noticia.title }}">
+    <p>{{ noticia.short_description }}</p>
+    <a href="{{ noticia.article_url }}" target="_blank">Ver noticia completa</a>
+{% endblock %}

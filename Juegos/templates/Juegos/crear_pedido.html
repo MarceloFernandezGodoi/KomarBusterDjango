@@ -1,0 +1,26 @@
+{% extends 'Juegos/base_generic.html' %}
+
+{% block title %}Crear Pedido{% endblock %}
+
+{% block content %}
+<h2 class="my-4">Crear Pedido</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="producto" class="form-label">Producto</label>
+        <select id="producto" name="producto" class="form-select" required>
+            {% for producto in productos %}
+            <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="cantidad" class="form-label">Cantidad</label>
+        <input type="number" id="cantidad" name="cantidad" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Pedido</button>
+</form>
+{% endblock %}
